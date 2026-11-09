@@ -13,9 +13,12 @@ public class ApiGatewayApplication {
 	@org.springframework.context.annotation.Bean
 	public org.springframework.web.cors.reactive.CorsWebFilter corsWebFilter() {
 		org.springframework.web.cors.CorsConfiguration config = new org.springframework.web.cors.CorsConfiguration();
-		config.addAllowedOrigin("http://localhost:5173"); // Allow React app
+		// Allow all local origins (React dev server, Minikube ports, etc.)
+		config.addAllowedOriginPattern("http://localhost:*");
+		config.addAllowedOriginPattern("http://127.0.0.1:*");
 		config.addAllowedMethod("*");
 		config.addAllowedHeader("*");
+		config.setAllowCredentials(true);
 
 		org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource source =
 				new org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource();
