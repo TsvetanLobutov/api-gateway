@@ -1,0 +1,43 @@
+# Overrides only for tests that boot the gateway on a real port (activate with @ActiveProfiles("test")).
+# The route list is repeated here because a profile-specific document replaces the list from
+# application.yaml as a whole; only the target URIs differ, they point at the stub downstream.
+# GatewayRoutesConfigTest asserts the production routes, so drift here is visible.
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: product-service
+              uri: http://127.0.0.1:${gateway.test.stub-port}
+              predicates:
+                - Path=/api/products/**
+            - id: order-service
+              uri: http://127.0.0.1:${gateway.test.stub-port}
+              predicates:
+                - Path=/api/orders/**
+              filters:
+                - JwtAuthenticationFilter
+            - id: auth-service
+              uri: http://127.0.0.1:${gateway.test.stub-port}
+              predicates:
+                - Path=/api/auth/**
+            - id: payment-service
+              uri: http://127.0.0.1:${gateway.test.stub-port}
+              predicates:
+                - Path=/api/payments/**
+            - id: review-service
+              uri: http://127.0.0.1:${gateway.test.stub-port}
+              predicates:
+                - Path=/api/reviews/**
+
+gateway:
+  test:
+    stub-port: 0
+
+management:
+  tracing:
+    sampling:
+      probability: 0.0
+    export:
+      enabled: false
